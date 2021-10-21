@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+.statusActive{
+  color: white;
+  background-color: red;
+  border-radius: 18%;
+  padding: 6px 14px;
+  font-weight: bold;
+}
+.status{
+  color: white;
+  background-color: rgb(169, 179, 231);
+  border-radius: 18%;
+  padding: 6px 14px;
+  font-weight: bold;
+}
+.addjob{
+  color: #d28012;
+  background-color: #afcc234a;
+}
+.mt-15{
+  margin-top: 15px;
+}
