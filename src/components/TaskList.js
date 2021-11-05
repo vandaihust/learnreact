@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-
+import * as actions from './../actions/index'
+import {connect} from 'react-redux'
 class TaskList extends Component {
     constructor(props) {
         super(props)
         this.state = {
             id: '',
             txtName: '',
-            status: true
+            status: false
         }
         this.closeTaskList = this.closeTaskList.bind(this)
         this.onHandleChange = this.onHandleChange.bind(this)
+        this.clearForm = this.clearForm.bind(this)
         this.deleteData = this.deleteData.bind(this)
     }
     componentWillMount() {
@@ -29,12 +31,7 @@ class TaskList extends Component {
                 status: nextProps.taskEditing.status,
             })
         } else if (!nextProps.taskEditing) {
-            console.log("sửa -> thêm");
-            this.setState({
-                id: '',
-                txtName: '',
-                status: true
-            })
+           this.clearForm()
         }//taskediting null
     }
 
@@ -44,25 +41,25 @@ class TaskList extends Component {
         this.setState({
             [name]: value
         })
-        // console.log(this.state);
+       
     }
     closeTaskList() {
-        this.props.onReceiveClose(false)
+        this.props.onCloseForm()
     }
     onAddJob(event) {
-        this.setState({
-            id: '',
-            txtName: '',
-            status: true,
-
-        })
         event.preventDefault();
-        this.props.onReceiveData(this.state)
+        this.props.onAddTask(this.state);
+        this.closeTaskList()
+    }
+    clearForm() {
+        this.props.taskEditing.id = '';
+        this.props.taskEditing.txtName = '';
+        this.props.taskEditing.status = true;
     }
     deleteData() {
         this.setState({
             txtName: '',
-            status: true
+            status: false,
         })
     }
 
@@ -72,7 +69,7 @@ class TaskList extends Component {
             <div>
                 <div className="panel-heading addjob">
                     <i aria-hidden="true" style={{ fontSize: '28px', cursor: 'pointer', float: 'right' }} className="fa fa-times-circle " onClick={this.closeTaskList}></i>
-                    <h3 className="panel-title">{id === '' ? "Thêm Công Việc" : "Cập nhật công việc"}</h3>
+                    <h3 className="panel-title">{id === '' || undefined ? "Thêm Công Việc" : "Cập nhật công việc"}</h3>
 
                 </div>
                 <div className="panel-body">
@@ -97,5 +94,20 @@ class TaskList extends Component {
         );
     }
 }
-
-export default TaskList;
+const mapStateToProps = (state) => {
+    return {
+        taskEditing: state.itemEditing.task
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        onAddTask: (task) => {
+            dispatch(actions.addTask(task))
+        },
+        onCloseForm: () => {
+            dispatch(actions.closeForm())
+        }
+        
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TaskList);
